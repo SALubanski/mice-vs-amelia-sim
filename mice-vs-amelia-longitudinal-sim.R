@@ -6,6 +6,7 @@
 
 # ::: p1
 # streamline data creation process for more units (miss_mat & unit_mat)
+# put functions in separate script
 
 # ::: p2
 # interrupted time series (treatment can change slope/SD at specified t)
@@ -75,7 +76,9 @@ miss.start <- function(n = n_pts, miss_end = NULL)
   
   # by default, endpoint of missingness is determined by binomial w/p=0.25
   
-  stopifnot(miss_end < n, miss_end > 0)
+  # check if 
+  stopifnot(miss_end < n, miss_end >= 0)
+  
   if(is.null(miss_end))
   {
     # miss_end <- sample(1:(n-1), 1)
@@ -90,6 +93,28 @@ undebug(miss.start)
 hist(replicate(1000, sum(miss.start())))
 
 # contiguous missing at end
+miss.end <- function(n = n_pts, miss_start = NULL)
+{
+  # generates binary vector: 1=missing, 0=observed
+  # missingness is at the end of the vector & contiguous (no gaps)
+  
+  # n..............number of time points
+  # miss_start.....place where the missingness ends
+  
+  # by default, start of missingness is determined by binomial w/p=0.25
+  
+  # check if 
+  stopifnot(miss_start <= n, miss_start > 0)
+  
+  if(is.null(miss_start))
+  {
+    # miss_end <- sample(1:(n-1), 1)
+    miss_end <- rbinom(1, n_pts, 0.25)
+  }
+  miss_vec <- rep(0, n)
+  miss_vec[1:miss_start] <- 1
+  miss_vec
+}
 # contiguous missing in middle
 # intermittent missing 
 
