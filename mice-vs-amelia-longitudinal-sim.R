@@ -52,10 +52,46 @@ fake.data()
 
 # GENERATE DATA ################################################################
 
+# ::: vectors of unit parameters ####
+betas <- rnorm(n_units, 15, 2)
+icepts <- rnorm(n_units, 200, 2)
+e_sds <- rep(10, n_units)
+
 # ::: data.frame of unit betas, icepts, & e.sd's ####
-unit_mat <- data.frame(beta = c(12, 13, 36, 37),
-                       icept = c(201, 200, 224, 223),
-                       e.sd = rep(10, 4))
+unit_mat <- data.frame(beta = betas,
+                       icept = icepts,
+                       e.sd = e_sds)
+
+# ::: types of missingness ####
+
+# contiguous missing at start
+miss.start <- function(n = n_pts, miss_end = NULL)
+  {
+  # generates binary vector: 1=missing, 0=observed
+  # missingness is at the start of the vector & contiguous (no gaps)
+  
+  # n............number of time points
+  # miss_end.....place where the missingness ends
+  
+  # by default, endpoint of missingness is determined by binomial w/p=0.25
+  
+  stopifnot(miss_end < n, miss_end > 0)
+  if(is.null(miss_end))
+  {
+    # miss_end <- sample(1:(n-1), 1)
+    miss_end <- rbinom(1, n_pts, 0.25)
+  }
+  miss_vec <- rep(0, n)
+  miss_vec[1:miss_end] <- 1
+  miss_vec
+}
+
+undebug(miss.start)
+hist(replicate(1000, sum(miss.start())))
+
+# contiguous missing at end
+# contiguous missing in middle
+# intermittent missing 
 
 # ::: generate missing data indicators ####
 miss_mat <- rbind(c(1, rep(0, n_pts-1)),
