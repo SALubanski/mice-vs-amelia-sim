@@ -4,7 +4,7 @@ Re-creation of a simulation to compare multiple imputation techniques with longi
 ## High-level summary
 1. Generate complete data
 2. Introduce missing data
-3. Impute missing data with Mice & Amelia
+3. Impute missing data with two algorithms (Mice & Amelia)
 4. Compare results with plots
 
 # Context
